@@ -1,0 +1,198 @@
+\documentclass[letterpaper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[activeacute,spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{geometry}
+\usepackage{fullpage}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{ amssymb }
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,petri,topaths,shapes,automata}
+\usepackage{tkz-berge}
+
+\usepackage[position=bottom]{subfig}
+
+\setlength\parindent{0pt}
+
+\tikzset{
+    %Define standard arrow tip
+    >=stealth',
+    % Define arrow style
+    pil/.style={
+           ->,
+           thick,}
+}
+
+\begin{document}
+
+\thispagestyle{empty}
+
+\begin{minipage}[t]{0.6\textwidth}
+
+{\LARGE \textbf{INF152} Estructuras Discretas}
+
+{\large Profesores: C. Lobos -- M. Bugueño -- G. Treimun}
+
+Universidad T\'ecnica Federico Santa Mar\'{\i}a
+
+Departamento de Inform\'atica -- Junio 1, 2020.
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.35\textwidth}
+%RELLENE CON SUS DATOS PERSONALES:
+\textbf{Nombre}: Alan Zapata Silva\\[0.3cm]
+\textbf{Rol}: 201956567-2 \textbf{Paralelo}: 201
+\end{minipage}
+
+\vspace{0.8cm}
+
+{\Large Certamen 2 -- Pregunta 2 \textbf{30pts.}} 
+
+\vspace{0.4cm}
+
+%\textbf{Esta evaluación tiene como máximo 25 puntos del C1}.\\
+
+
+
+\textbf{[En un futuro no muy lejano]} Luego de haber aprobado el primer semestre del 2020, superando una pandemia y el estrés del encierro usted ha decidido tomar un viaje de vacaciones por haber logrado tal hazaña. Es por ello que desempolva su guardada bicicleta y se propone a visitar las ciudades de la turística región de SENAY como cicloturista. La región de SENAY se caracteriza por estar compuesta de islas, donde cada isla tiene distintas ciudades y caminos que se conectan entre éstas (entre islas no hay camino, asuma que un barco le puede llevar desde una isla a otra, pero tampoco cuenta como camino). Dado que su tiempo es limitado usted desea enfocarse en conocer los puntos más atractivos de la región que justo coinciden estar en las ciudades más populares, y a su vez las ciudades más populares son las que tienen más caminos con otras ciudades. Además, con el mismo objetivo de planificar una buena ruta, es que usted se ha percatado de que para ello tiene que evitar dar vueltas en círculos entre las ciudades, por lo cual necesita tener conocimiento de las ciudades que los componen. Afortunadamente, todo alumno que ha aprobado INF-152 tiene los conocimientos necesarios para realizar esta tarea, por lo cual llego la hora de aplicarlos.
+\begin{enumerate}[a)]
+    \item Diseñe en \texttt{pseudo-código} una función que recibe un Grafo $G$ de ciudades y sus caminos, además de un cierto valor $\omega$. La función debe buscar las ciudades más atractivas a visitar y además debe retornar las ciudades que podrían hacer que usted termine dando vueltas en circulo en su ruta, es decir, debe retornar 2 elementos. Para las ciudades considere que deben cumplir con un mínimo valor $\omega$ de popularidad para ser consideradas atractivas. Se cuenta con las siguientes funciones para realizar la pregunta: \textbf{[20\%]}
+    \begin{itemize}
+        \item \texttt{G.V()}: retorna un conjunto con los vértices de $G$.
+        \item \texttt{G.E()}: retorna un conjunto con  los arcos de $G$.
+        \item \texttt{grade(v)}: retorna el grado del nodo $v$.
+        \item \texttt{getPaths(G,u,v)}: retorna una lista con todos los caminos entre los nodos $u$ y $v$ en $G$ (un camino corresponde a una lista de vértices).
+        \item \texttt{compConex(G,v)}: retorna una componente conexa de $G$ a partir de $v$.
+        \item operaciones sobre conjuntos (C), listas (L) y colas(Q):
+        \begin{itemize}
+            \item \texttt{C.add(x)/L.add(x)}: agrega el elemento $x$ al conjunto o lista.
+            \item \texttt{C.pop()/L.pop()}: retorna y elimina el primer elemento del conjunta o lista.
+            \item \texttt{len(C)/len(L)}: cantidad de elementos en conjunto o lista.
+            \item \texttt{L1.concatenate(L2)}: concatena listas L1 y L2 en L1, y $A \cup B$: Une los conjuntos $A$ y $B$.
+            \item \texttt{enquehue(Q,x):} agrega el elemento $x$ al final de la cola.
+            \item \texttt{dequehue(Q):} retorna y elimina el primer elemento de la cola.
+        \end{itemize}
+    \end{itemize}
+\textbf{Desarrollo:}\\
+\newline
+\begin{center}
+\begin{minipage}{0,5\textwidth}
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+\STATE{\textbf{procedure} Vacaciones(G)}
+\STATE{\textbf{variable} ciudades : Lista de vértices (ciudades)}
+\STATE{ciudades = G.V();}
+\STATE{\textbf{Lista} L;}
+\FOR{ciudad in ciudades}
+\IF{$grade(ciudad)\geq w$}
+\STATE {L.add(ciudad);}
+\ENDIF
+\ENDFOR
+\RETURN L;
+\STATE{\textbf{variable} CV : Lista de ciudades visitadas}
+\STATE{\textbf{variable} CPC : Lista de  con peligro de circulo }
+\FOR{ciudad in ciudades}
+\IF{ciudad \textbf{not in} CV}
+\STATE{CV.add(ciudad)}
+\STATE{\textbf{variable} CC : Lista de ciudades conexas}
+\STATE{CC = compConex(G,ciudad);}
+\STATE{largocc = len(CC)}
+\STATE{i=1;}
+\WHILE{i $\angle$ largocc }
+\IF{CC[i] \textbf{in} CV}
+\STATE{CPC.add(CC[i])}
+\ELSE{CV.add(CC[i]);}
+\ENDIF
+\ENDWHILE
+\ENDIF
+\ENDFOR
+\RETURN CPC;
+
+\end{algorithmic}
+\caption {Posibilidad de dar vuelta}
+\label{alg:pri}
+\end{algorithm}
+\end{minipage}
+\end{center}
+
+
+
+
+
+
+    \item Por otro lado, mientras usted se encuentre viajando lo más probable es que deba acampar entre ciudades, pero una vez que llega a una ciudad lo ideal sería que duerma en una cama para recuperar al máximo sus fuerzas. La región de SENAY, al ser tan turística, tiene una estricta regulación de sus hospedajes. La jerarquización de los hospedajes por ciudad la podríamos representar por un árbol ternario completo, en donde los nodos representan los hospedajes y la cantidad de niveles es directamente proporcional a la popularidad de la ciudad, en donde a mayor nivel, disminuye el valor del hospedaje. Dado que usted buscará siempre la opción más económica, encuentre una expresión que le permita conocer cuantas opciones de hospedaje tendrá como máximo por ciudad para el Grafo $G$ entregado en a). \textbf{Justifique claramente su respuesta, resultados mágicos no serán considerados.} \textbf{[10\%]}\\
+\newline
+\textbf{Desarrollo:}\\
+\newline\\
+\begin{minipage}[t]{0.45\textwidth}
+Lo que necesitamos en esta parte, es lograr encontrar una expresión que nos permita calcular la cantidad de hospedajes que hay en una ciudad, debido a que sabiendo que \textit{``La jerarquización de los hospedajes por ciudad la podríamos representar por un árbol ternario completo, en donde los nodos representan los hospedajes''}, mientras sepamos la cantidad de alojamientos que hay, podremos saber la cantidad de niveles que tiene este árbol, lo cual nos sirve, ya que, según el enunciado \textit{``la cantidad de niveles es directamente proporcional a la popularidad de la ciudad, en donde a mayor nivel, disminuye el valor del hospedaje''}, y como buscamos economizar lo mas posible, necesitamos que la expresión a calcular, nos entregue la cantidad de niveles de cada ciudad, lo cual lo conseguiremos (gracias a que sabemos que el árbol es ternario) al saber la cantidad de hojas que tiene el árbol que representa la jerarquización de esa ciudad.\\
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.6\textwidth}
+\begin{tikzpicture}[every node/.style={circle,  fill=purple!40!white}]
+\node {1} [sibling distance=3cm]
+child {node {2} [sibling distance=1cm]
+child {node {3}}
+child {node {4}}
+child {node {5}}
+}
+child {node {6} [sibling distance=1cm]
+child {node {7}}
+child {node {8}[sibling distance=1cm]
+child {node {9}}
+child {node {10}}
+child {node {11} [sibling distance=1cm]
+child {node {12}}
+child {node {13}}
+child {node {14}
+}
+}
+}
+child {node {15}}
+}
+child {node {16} [sibling distance=1cm]
+child {node {17}}
+child {node {18}}
+child {node {19}}
+}
+\end{tikzpicture}
+\captionof{figure}{Ejemplo de árbol ternario completo.}
+\end{minipage}
+
+Gracias a lo visto en clase(diapositiva n$^{\circ}$ 29, clase grafos, árboles y búsqueda), sabemos que si la cantidad de vértices de cada nodo esta determinada (numero máximo de vértices por nodo = 3 = $d$), y sabemos la altura de este ($h$), la cantidad de hojas(Hospedajes), puede ser calculada como:
+\begin{align}
+    Hojas &= d^{h}\\
+    Hospedajes &= 3^{h}
+\end{align}
+Y gracias al enunciado, sabemos que la cantidad de niveles es directamente proporcional a la popularidad de la ciudad($w$), por lo que podríamos escribir la altura e ($h$) en función de la popularidad;
+\begin{align}
+    h = a*w
+\end{align}
+\begin{center}
+Con $a \geq 1$
+\end{center}
+Ya que solo nos dicen \textit{``la cantidad de niveles es directamente proporcional a la popularidad de la ciudad''} pero no sabemos la ``constante de proporcionalidad'' entre ambos datos, por lo que dejamos explicitado que esa constante tomara el valor de $a$ mientras que $w$ corresponde a la popularidad de la ciudad. Con los datos recién obtenidos, podemos concluir que las opciones máximas de hospedaje se podrá calcular(gracias a las ecuaciones (2) y (3) como:
+\begin{align}
+    Hospedajes &= 3^{a*w}
+\end{align}
+\begin{center}
+Con $a \geq 1$
+\end{center}
+\end{enumerate}
+
+\vfill
+
+\end{document}
+
+
+
